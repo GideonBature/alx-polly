@@ -10,11 +10,24 @@ export function VoteForm({ poll }: { poll: Poll & { poll_options: Option[] } }) 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [voted, setVoted] = useState(false)
   const [options] = useState(poll.poll_options)
+  const [submitting, setSubmitting] = useState(false)
+  /**
+   * VoteForm (Client Component)
+   * What: Presents options and lets the user submit a single vote via the server action.
+   * Why: Client interactivity (local state, click handlers) requires a client component. The actual
+   * vote is submitted to a server action to avoid exposing credentials and to leverage DB-side RLS/RPC.
+   */
 
   const handleVote = async () => {
     if (!selectedOption) return
     setVoted(true)
-    await vote(poll.id, selectedOption)
+    // Optimistically mark as voted; server will still enforce single-vote invariant via RPC/RLS.
+    setSubmitting(true)
+    try {
+      await vote(poll.id, selectedOption)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (voted) {
@@ -25,6 +38,7 @@ export function VoteForm({ poll }: { poll: Poll & { poll_options: Option[] } }) 
           <CardDescription>Thank you for voting!</CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Realtime updates could stream results; currently we suggest a brief delay for revalidation. */}
           <p className="text-sm text-foreground/70">Results will update shortly.</p>
         </CardContent>
       </Card>
@@ -52,7 +66,8 @@ export function VoteForm({ poll }: { poll: Poll & { poll_options: Option[] } }) 
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleVote} disabled={!selectedOption}>
+  {/* Disabled until an option is selected; server action also validates inputs. */}
+  <Button onClick={handleVote} disabled={!selectedOption || submitting}>
           Vote
         </Button>
       </CardFooter>

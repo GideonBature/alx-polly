@@ -9,6 +9,12 @@ import { useState } from "react";
 import { createBrowser } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
 
+/**
+ * SignInPage (Client Component)
+ * What: Simple email/password sign-in using Supabase client.
+ * Why: Runs on the client to avoid a full round-trip; session is stored in secure cookies by Supabase
+ * and is then available to server components via the SSR client.
+ */
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +31,8 @@ export default function SignInPage() {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/');
+  // After sign-in, send to the homepage where SSR can tailor CTAs.
+  router.push('/');
     }
   };
 

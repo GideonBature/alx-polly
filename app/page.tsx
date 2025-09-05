@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default async function Home() {
+/**
+ * Home
+ * What: Landing page explaining the app and providing CTAs for browsing polls or creating one.
+ * Why: Sets expectations for anonymous voters vs authenticated creators. SSR lets us tailor CTAs
+ * based on whether the viewer is signed in without leaking any sensitive session data.
+ */
   const supabase = await createClient();
   const {
     data: { user },

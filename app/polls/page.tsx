@@ -24,6 +24,13 @@ export default async function PollsPage({ searchParams }: { searchParams?: Promi
     <div className="space-y-6">
       {sp.created === '1' && (
         <div className="rounded-md border border-black/10 dark:border-white/15 bg-green-50 dark:bg-green-900/20 text-green-900 dark:text-green-200 px-4 py-3">
+          /**
+           * PollsPage
+           * What: Server Component that lists polls visible to the current user and provides owner-only controls.
+           * Why: Central dashboard for discovery and management; SSR ensures fast loads and secure data fetching
+           * via the Supabase server client and RLS. We compute `isOwner` strictly on the server to avoid exposing
+           * sensitive checks to the client and to prevent UI desync for unauthorized users.
+           */
           Poll created successfully
         </div>
       )}

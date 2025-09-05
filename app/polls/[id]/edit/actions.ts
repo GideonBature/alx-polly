@@ -32,6 +32,12 @@ export async function updatePoll(formData: FormData) {
     throw new Error("Not found")
   }
 
+/**
+ * updatePoll(formData)
+ * What: Validates edits, verifies poll ownership, and updates the poll and its options.
+ * Why: Server-side enforcement prevents unauthorized edits. We diff existing vs submitted options to
+ * avoid destructive replacements and to preserve stable IDs; `idx` maintains display order.
+ */
   // Update question
   const { error: upErr } = await supabase
     .from("polls")

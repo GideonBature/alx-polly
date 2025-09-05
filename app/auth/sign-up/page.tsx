@@ -9,6 +9,11 @@ import { useState } from "react";
 import { createBrowser } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
 
+/**
+ * SignUpPage (Client Component)
+ * What: Email/password registration via Supabase client.
+ * Why: Keeps UX responsive; Supabase persists session in cookies so SSR can personalize after redirect.
+ */
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +22,7 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+  if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
@@ -31,7 +36,8 @@ export default function SignUpPage() {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/');
+  // Redirect to home; server components will read session for tailored experience.
+  router.push('/');
     }
   };
 

@@ -6,6 +6,12 @@ export async function createPoll(formData: FormData) {
   const question = String(formData.get("question") || "").trim();
   let options = formData.getAll("options").map((v) => String(v || "").trim());
   options = options.filter((o) => o.length > 0);
+/**
+ * createPoll(formData)
+ * What: Validates inputs and creates a poll with its options under the authenticated user.
+ * Why: Server Action keeps credentials on the server and leverages RLS policies that require the
+ * `owner` to match `auth.uid()` for inserts. We upsert the profile to ensure FK constraints are met.
+ */
 
   if (question.length < 5 || question.length > 500) {
     throw new Error("Question must be between 5 and 500 characters");
